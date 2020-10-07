@@ -45,4 +45,3 @@ RUN make -j $(($(grep -c ^processor /proc/cpuinfo)-1)) install
 WORKDIR "/"
 RUN rm /opt/TauDEM
 ENV PATH /usr/local/taudem:$PATH
-
