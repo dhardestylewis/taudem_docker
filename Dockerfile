@@ -4,10 +4,15 @@ MAINTAINER Daniel Hardesty Lewis <dhl@tacc.utexas.edu>
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ America/Chicago
+ENV TAUDEM_VERSION k
+ENV TAUDEM_REPO TauDEM
+ENV TAUDEM_USER dhardestylewis
+ENV PATH /usr/local/taudem:$PATH
 
 RUN apt-get update && \
     apt-get install -y \
         build-essential \
+        gcc \
         g++ \
         gfortran \
         python3-all-dev \
@@ -31,17 +36,21 @@ RUN apt-get update && \
         mpich \
         libmpich12 \
         libmpich-dev \
-        git \
         cmake && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-## Download and build taudem
-RUN wget -O /opt/TauDEM.tar.gz https://github.com/dtarb/TauDEM/archive/Develop.tar.gz && \
-    tar -xvf /opt/TauDEM.tar.gz -C /opt && \
-    mkdir /opt/TauDEM-Develop/src/build
-WORKDIR "/opt/TauDEM-Develop/src/build"
+## Download and build TauDEM
+RUN wget \
+        -O /opt/${TAUDEM_REPO}.tar.gz \
+        https://github.com/${TAUDEM_USER}/${TAUDEM_REPO}/archive/${TAUDEM_VERSION}.tar.gz && \
+    tar -xvf /opt/${TAUDEM_REPO}.tar.gz -C /opt && \
+    mkdir /opt/${TAUDEM_REPO}-${TAUDEM_VERSION}/src/build
+WORKDIR "/opt/${TAUDEM_REPO}-${TAUDEM_VERSION}/src/build"
 RUN cmake .. && \
-    make -j $(($(grep -c ^processor /proc/cpuinfo)-1)) && \
-    make -j $(($(grep -c ^processor /proc/cpuinfo)-1)) install && \
-    rm -Rf /opt/TauDEM-Develop
-ENV PATH /usr/local/taudem:$PATH
+    export NCPU=$(($(grep -c ^processor /proc/cpuinfo) - 1)) && \
+    make -j ${NCPU} && \
+    make -j ${NCPU} install && \
+    rm -Rf /opt/${TAUDEM_REPO}-${TAUDEM_VERSION}
+WORKDIR "/"
+
