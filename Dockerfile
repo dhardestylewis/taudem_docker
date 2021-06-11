@@ -1,4 +1,4 @@
-FROM tacc/tacc-ubuntu18-mvapich2.3-ib
+FROM dhardestylewis/tacc-ubuntulatest-mvapich2.3-ib
 
 MAINTAINER Daniel Hardesty Lewis <dhl@tacc.utexas.edu>
 
