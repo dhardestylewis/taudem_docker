@@ -9,13 +9,13 @@ Up-to-date TauDEM Docker image
 TauDEM commands may be run as one-off commands using this Docker image using the following shell command as a template:
 
 ```
-docker run --name hand_taudem_bash --rm -i -t hand_taudem --mount type=bind,source="$(pwd)",target="/mnt/host" pitremove -z /mnt/host/DEM.tif -fel /mnt/host/DEMfel.tif
+docker run --name hand_taudem_bash --rm -i -t --mount type=bind,source="$(pwd)",target="/mnt/host" dhardestylewis/taudem:tacc pitremove -z /mnt/host/DEM.tif -fel /mnt/host/DEMfel.tif
 ```
 
 or multiple TauDEM commands may be run in sequence bringing up the Docker image once for all commands using the following shell command as a template:
 
 ```
-docker run --name taudem_bash --rm -i -t taudem --mount type=bind,source="$(pwd)",target="/mnt/host" bash taudem_commands.sh
+docker run --name taudem_bash --rm -i -t --mount type=bind,source="$(pwd)",target="/mnt/host" dhardestylewis/taudem:tacc bash taudem_commands.sh
 ```
 
 where `taudem_commands.sh` is written according to this template:
@@ -33,7 +33,7 @@ The Singularity pull command is similar to the Docker pull command:
 ```
 singularity pull \
     --name taudem.sif \
-    docker://dhardestylewis/taudem_docker:latest
+    docker://dhardestylewis/taudem_docker:tacc
 ```
 
 Once pulled, a one-off TauDEM command using Singularity can be issued:
@@ -63,8 +63,8 @@ docker run \
     --rm \
     -i \
     -t \
-    dhardestylewis/taudem_docker:latest \
     --mount type=bind,source="$(pwd)",target="/mnt/host" \
+    dhardestylewis/taudem_docker:tacc \
     bash -c './taudem_commands.sh'
 ```
 
